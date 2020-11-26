@@ -214,6 +214,9 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
         // 저장된 알림 설정
         alert = getSharedPreferences(PREFS_NAME2, Activity.MODE_PRIVATE);
         alertSetting = alert.getBoolean(PREFS_NAME2, true);
+        if(alertSetting){       // 알림 기능 서비스 시작
+            startService(new Intent(this, ExpAlert.class));
+        }
 
         // 저장된 카테고리 목록
         appData = getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
