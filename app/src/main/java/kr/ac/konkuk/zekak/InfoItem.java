@@ -36,7 +36,6 @@ public class InfoItem extends AppMain {
     TextView portion;
     ProgressBar portionBar;
     TextView portionLabel;
-    ScrollView memoView;
     TextView memo;
 
     Button btnAllUsed;
@@ -130,6 +129,7 @@ public class InfoItem extends AppMain {
         btnDeleteItem.setOnClickListener(onClickListener);
         btnCloseInfo.setOnClickListener(onClickListener);
     }
+
 
     class BtnOnClickListener implements View.OnClickListener{
         @Override
@@ -270,7 +270,7 @@ public class InfoItem extends AppMain {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == EDIT_ITEM){
-            Intent returnIntent = null;
+            Intent returnIntent = new Intent();
             returnIntent.putExtra("TAB_POSITION", position);
             if(resultCode == RESULT_OK){        // 아이템 수정이 되었으면 새로운 액티비티가 켜질 것이므로 이 창은 닫음
                 setResult(ITEM_EDITED, returnIntent);

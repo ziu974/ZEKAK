@@ -27,7 +27,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@id/toolbar">
 
-<!--            No toolbars _ 그냥 디자인 측면에서 시도-->
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                         android:textColor="#FFFFFF"
                         android:textStyle="italic|bold"
                         android:text="ZEKAK"
-                        android:textSize="30sp"
+                        android:textSize="@dimen/text_title"
                         android:ellipsize="marquee"/>
 
 

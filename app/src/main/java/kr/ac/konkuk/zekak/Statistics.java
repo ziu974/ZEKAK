@@ -1,6 +1,8 @@
 package kr.ac.konkuk.zekak;
 
-public class Statistics {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Statistics extends AppCompatActivity {
     // 이름 변경--> AWSstaistics? AWSNutrients?
 
     //Server: AWS, (class 이름: Statistics.java)

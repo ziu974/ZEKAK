@@ -29,7 +29,7 @@ import static kr.ac.konkuk.zekak.AppMain.imagePath;
 public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.ViewHolder> {
     public List<Item> itemDisplay = new ArrayList<>();           // 현재 디스플레이되고 있는 아이템들(카테고리든, 전체든)
     Context context;
-    String targetCategory = null; // 이 어댑터에서 보여줘야 할 카테고리, 이렇게 안하면 전체 아이템만 보이고 갱신이 안됨
+    String targetCategory; // 이 어댑터에서 보여줘야 할 카테고리, 이렇게 안하면 전체 아이템만 보이고 갱신이 안됨
 
     public interface OnListItemSelectedInterface {
         void onItemSelected(int itemID, View v, int position);
@@ -153,4 +153,9 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
     public long getItemId(int position) {       // CODE: 갱신, 고유 id 연결해서 어댑터에게 setHasStableIds 알릴 때 활용
         return itemDisplay.get(position).getId();
     }
+
+
+    private void refresh() {
+    }
+
 }

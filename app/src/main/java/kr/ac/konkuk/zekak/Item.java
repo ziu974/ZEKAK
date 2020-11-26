@@ -92,4 +92,6 @@ public class Item implements Parcelable {    // intent의 extra에 이 구조체
     public long getId() {
         return id;
     }       // RecyclerView에서 사용
+
+
 }

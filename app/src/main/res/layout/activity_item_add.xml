@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="Add Item"
             android:textStyle="bold"
-            android:textSize="25sp"
+            android:textSize="@dimen/text_title"
             android:textColor="@color/text_grey"/>
 
 
@@ -259,6 +259,7 @@
 
             <Switch
                 android:id="@+id/edit_item_pin"
+                android:track="@drawable/button_background_drawable"
                 style="@style/Widget.AppCompat.CompoundButton.Switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -61,6 +61,11 @@
             android:theme="@style/Theme.ZEKAK.NoActionBar"
             android:launchMode="singleInstance"
             android:configChanges="orientation|screenSize"/>
+        <activity android:name=".Settings"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.ZEKAK.NoActionBar" />
+        <activity android:name=".Statistics" />
+
     </application>
 
 </manifest>
