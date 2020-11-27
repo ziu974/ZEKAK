@@ -2,7 +2,6 @@ package kr.ac.konkuk.zekak;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -393,7 +392,7 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
 
             // InfoItem.java
             case ITEM_INFO:
-                assert data != null;    // 오류방지를 위해
+                //assert data != null;    // 오류방지를 위해
                 Log.i("아이템 상세 페이지", "result of intent");
                 if (resultCode == ITEM_EDITED) {
                     int position = data.getIntExtra("TAB_POSITION", -1);

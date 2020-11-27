@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="500dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constrainedWidth="true"
         android:layout_above="@+id/buttonsLayout">
