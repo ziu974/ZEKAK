@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.view.View;
 
 //https://medium.com/better-programming/animated-fab-button-with-more-options-2dcf7118fff6 참고
+// FAB의 애니메이션을 구현하는 클래스
 public class ViewAnimation {
     public static boolean rotateFab(final View v, boolean rotate) {
         v.animate().setDuration(300)

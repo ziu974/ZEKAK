@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,9 +27,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import kr.ac.konkuk.zekak.R;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -72,7 +67,6 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
     public Cursor cursor;
 
     //11/15 (CODE: 포토) 사진 받아올 절대경로 파일 부분 변수로 저장
-    // f:/TODO
     public static File imagePath;
 
     // 11/10 Cateogry 관련
@@ -83,27 +77,23 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
     // 11/10 Items 관련
     public CustomListAdapter itemListAdapter;
 
-    // CODE 9009 (검색하면 됨, 그부분 고쳐)
-    //TODO: ITEMS랑 겹쳐서 일단은 둘 다 쓰지만, 둘 중 하나 골라
     public List<Item> categoryItemList;      // '특정 카테고리' 아이템 담아오는 곳
     public static List<Item> ITEMS = new ArrayList<Item>();               // '전체' 아이템 담아오는 곳 (id 제외)
-    ///////9009 끝 //
 
-    //TODO: id map에 매핑해서 저장
-    public static final Map<Integer, Item> ITEM_MAP = new HashMap<Integer, Item>();   // 아이템 관리 위해서 (key: id)
+
+    public static final Map<Integer, Item> ITEM_MAP = new HashMap<>();   // 아이템 관리 위해서 (key: id)
     private static int COUNT = 0;                                     // 총 아이템 수 표시를 위해서
 
 
     private final static int CAMERA_PERMISSIONS_GRANTED = 100;
-
-    private boolean firstAttempt = false;
 
 
     // 각종 뷰( 일단은 다른 클래스에서 쓰이는 것들만 전역으로 선언)
     Spinner categoryChange;
     RecyclerView recyclerView;
     ActionMenuView menuBtn;
-    private FloatingActionButton addFab, barcodeAddFab, manualAddFab;
+    private FloatingActionButton barcodeAddFab;
+    private FloatingActionButton manualAddFab;
     TextView fabText1, fabText2;
     boolean isRotate = false;
 
@@ -142,7 +132,6 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
 
         // PART1: layout part
         setContentView(R.layout.activity_main);
-        CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
 
         // 상단 바 버튼들의 이벤트 리스너 모아서 정의해둔 클래스
         BtnOnClickListener onClickListener = new BtnOnClickListener();
@@ -189,16 +178,16 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
             }
         });
 
-        addFab = (FloatingActionButton) findViewById(R.id.add_item_btn);
+        FloatingActionButton addFab = findViewById(R.id.add_item_btn);
         addFab.setOnClickListener(onClickListener);
 
         // addFab 버튼 inflate 되었을 떄의 버튼들
-        barcodeAddFab = (FloatingActionButton) findViewById(R.id.barcode_add_btn);
+        barcodeAddFab = findViewById(R.id.barcode_add_btn);
         barcodeAddFab.setOnClickListener(onClickListener);
-        manualAddFab = (FloatingActionButton) findViewById(R.id.manual_add_btn);
+        manualAddFab = findViewById(R.id.manual_add_btn);
         manualAddFab.setOnClickListener(onClickListener);
-        fabText1 = (TextView) findViewById(R.id.barcode_add_btn_text);
-        fabText2 = (TextView) findViewById(R.id.manual_add_btn_text);
+        fabText1 = findViewById(R.id.barcode_add_btn_text);
+        fabText2 = findViewById(R.id.manual_add_btn_text);
         ViewAnimation.init(barcodeAddFab);  // 처음 앱 실행시 fab 두개 숨김
         ViewAnimation.init(manualAddFab);
         ViewAnimation.init(fabText1);
@@ -210,15 +199,15 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
     }
 
     // 설정값 불러오는 함수, 처음에만 호출(안그러면 categoryList 중복되어 저장됨)
-    private ArrayList<String> load() {
-        // 저장된 알림 설정
+    private void load() {
+        // 1. 저장된 알림 설정
         alert = getSharedPreferences(PREFS_NAME2, Activity.MODE_PRIVATE);
         alertSetting = alert.getBoolean(PREFS_NAME2, true);
         if(alertSetting){       // 알림 기능 서비스 시작
             startService(new Intent(this, ExpAlert.class));
         }
 
-        // 저장된 카테고리 목록
+        // 2. 저장된 카테고리 목록
         appData = getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
         Set<String> set = appData.getStringSet(PREFS_NAME, null);
         if (set == null) {        // 전체 카테고리 없을 때 대비(App 첫 실행)
@@ -227,14 +216,12 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
             categoryList.clear();
             categoryList.addAll(set);
         }
-
-        return categoryList;
     }
 
     // 설정값 저장하는 함수
     public boolean save(String newCategory) {        // 지금은 카테고리만 저장하는 역할(설정값 저장할게 이것 밖에없음 아직), 나중에 알림기능이나, 통계 on/off 블라블라
         SharedPreferences.Editor editor = appData.edit();       // SharedPreferences (설정 저장용 파일) 열기
-        Set<String> duplicate_prevention = new HashSet<String>(categoryList);    // 중복 카테고리 add 방지하기 위해 HashSet 사용
+        Set<String> duplicate_prevention = new HashSet<>(categoryList);    // 중복 카테고리 add 방지하기 위해 HashSet 사용
 
         if (duplicate_prevention.add(newCategory)) {           // 새로운 카테고리 추가 시도, 카테고리명 중복 방지를 위해
             editor.remove(PREFS_NAME);      // 기존의 목록 삭제
@@ -269,18 +256,12 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        itemsDB.db_close();
+        itemsDB.db_close();     // DB 닫음
     }
-
-    private void restartActivity() {        // refresh the AppMain (카테고리 추가/삭제, 아이템추가 등등)
-        this.recreate();
-    }// 카테고리 추가되거나 삭제된 경우(Menu.java)
 
 
     @Override
-    public void onItemSelected(int itemID, View v, int position) {
-        Toast.makeText(this, "Single Click on position:" + position,
-                Toast.LENGTH_SHORT).show();
+    public void onItemSelected(int itemID, View v, int position) {      // 아이탭 탭을 click했을 경우 아이템 상세페이지 이동
         Intent intent = new Intent(AppMain.this, InfoItem.class);
         intent.putExtra("ITEM_ID", itemID);
         intent.putExtra("TAB_POSITION", position);
@@ -288,29 +269,22 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
     }
 
     @Override
-    public void onItemLongHold(int itemID, View v, int position, int portion) {
-        Toast.makeText(this, "Hold on itemID:" + portion, Toast.LENGTH_SHORT).show();
-        if (portion / 10 == portion - (portion / 10)) {  // 여기 1회분 사용에서는 메모리 절약을 위해서 바로 계산
+    public void onItemLongHold(int itemID, View v, int position, int portion) {     // 아이템 탭을 long hold 했을 경우 1회분 사용
+        //Toast.makeText(this, "Hold on itemID:" + portion, Toast.LENGTH_SHORT).show();
+        if (portion / 10 != portion % 10) {  // 여기 1회분 사용에서는 메모리 절약을 위해서 바로 계산
             portion++;
             boolean dbCheck = itemsDB.usePortion(itemID, portion);       // 1회분 사용 처리 함수
             if (!dbCheck) {
                 Toast.makeText(this, "1회분 사용 fail", Toast.LENGTH_SHORT).show();
             } else {
-//                categoryItemList.remove(아이템을 어떻게 가져오지);
-//                categoryItemList.add();
-                Log.i("나 여깄어!", "아아");
-                categoryItemList = getItemList(currentCategory);
+                Toast.makeText(this, "1회분 사용", Toast.LENGTH_SHORT).show();
+                categoryItemList.get(categoryItemList.indexOf(ITEM_MAP.get(itemID))).portion = portion;
                 itemListAdapter.notifyItemChanged(position);
-//                //TODO
-//                progressBar.setProgress(used / divided * 100);
-//                // TODO: refresh recycler view
-//                used++;
-//                percentage = 100 * used / divided;
-//                portionBar.incrementProgressBy(percentage);
-//                portionLabel.setText(used+"/"+divided);
-//                returnIntent.putExtra("ITEM_USED", "portion");
             }
+        } else {
+            Toast.makeText(this, "모두 먹음만 가능", Toast.LENGTH_SHORT).show();
         }
+        return;
     }
 
     @Override
@@ -324,8 +298,8 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
     class BtnOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Intent intent = null;
-            Context context = getApplicationContext();
+            Intent intent;
+            //Context context = getApplicationContext();
             switch (view.getId()) {
                 case R.id.menu_btn:     // popup menu 사용해 메뉴 구성(기본 toolbar 안 쓸거라서)
                     PopupMenu popup = new PopupMenu(AppMain.this, view);
@@ -334,12 +308,11 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            Log.i("여기", String.valueOf(item.getItemId()));
                             if (item.getItemId() == R.id.action_settings) {    // 설정 버튼 클릭
                                 Intent intent = new Intent(AppMain.this, Settings.class);
                                 intent.putExtra("CATEGORY_LIST", categoryList);
                                 intent.putExtra("ALERT_SETTINGS", alertSetting);
-                                //startActivityForResult(intent, SETTINGS);
+                                startActivityForResult(intent, SETTINGS);       // 카테고리 추가의 경우 필요X / 카테고리 삭제의 경우 전체 아이템 갱신위해
                                 startActivity(intent);
                             } else if (item.getItemId() == R.id.action_statistics) {                                     // 통계 버튼 클릭
                                 Intent intent = new Intent(AppMain.this, Statistics.class);
@@ -371,25 +344,22 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
 
                 // 버튼 3개 생성, 이 리스너 연결(안에서 자기가 자기 참조가 가능한가..?) yes11.16
 
-                //
                 case R.id.barcode_add_btn:
-                    getCameraPermission();          // 혹시 모를 오류 방지를 위해.. 카메라 권한 체크
-                    // 이제 여기에서 BarcodeScanningActivity 실행 후
-                    // 인텐트--> AddItem으로 넘어가기
+                    getCameraPermission();          // 카메라 권한 체크 (오류 방지를 위해)
+                    // 이제 여기에서 BarcodeScanningActivity 실행 후 --> AddItem으로 intent
                     intent = new Intent(AppMain.this, BarcodeScanningActivity.class);
-                    // TODO: (edit below) 현재 페이지의 카테고리 이름, 아이템 추가시 자동으로 입력되게
+                    // 현재 페이지의 카테고리 이름, 아이템 추가시 자동으로 입력되게!!
+                    // ex. 'test' 카테고리에서 아이템 추가 --> 상세정보 입력 시 'test' 자동 입력
                     intent.putExtra("INITIAL_CATEGORY", categoryChange.getSelectedItemPosition());
                     startActivityForResult(intent, BARCODE_ADD);
                     break;
 
 
                 case R.id.manual_add_btn:
-                    // 이제 여기에서 인텐트--> AddItem으로 넘어가기
+                    // 이제 여기에서 인텐트--> AddItem으로 intent
                     intent = new Intent(AppMain.this, AddItem.class);
-                    //intent.putExtra("INITIAL_CATEGORY", categoryList.indexOf(currentCategory)-1);
-                    // TODO: 이거 categoryList.indexOf(itemInfo.category)로 위에 test처럼 바꿀까
                     intent.putExtra("INITIAL_CATEGORY", categoryChange.getSelectedItemPosition());
-                    intent.putExtra("EXTRA_SESSION_ID", "manual");
+                    intent.putExtra("EXTRA_SESSION_ID", "manual");  // [중요]ItemInfo에서 사용됨 // 참고로 barcode add는 BarcodeScanningActivity에서 별도로 입력
                     startActivityForResult(intent, MANUAL_ADD);
                     break;
 
@@ -397,7 +367,7 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
         }
     }
 
-    // TODO : 임시
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {       // 각 클래스에서 db 처리까지 해줬으니, 여기에선 1.categoryItemList<>, 2. recyclerView adapter 갱신
         super.onActivityResult(requestCode, resultCode, data);
@@ -408,62 +378,45 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
                 if (resultCode == RESULT_OK) {       // 단순히 사용자가 인식 취소 누른 경우
                     break;
                 } else if (resultCode == RESULT_CANCELED) {    // 식품안전나라 탐색에서 ERROR
-                    // 바코드가 없거나
-                    // 카메라 권한 denied
-                    Log.i("아아아악:Something went wrong with the API..", "식품안전나라API");
+                    // i)바코드가 없거나
+                    // ii) 카메라 권한 denied
+                    Log.i("오류!!Something went wrong with the API..", "식품안전나라API");
                 }
                 break;
 
             case MANUAL_ADD:        // 바코드 추가인 경우도 여기에서 처리됨
                 if ((resultCode == ITEM_ADDED)) {       // 데이터베이스에 추가까지 마친상태
-                    Item newItem = (Item) data.getParcelableExtra("NEW_ITEM");
-                    // TODO: 여기에 문제, 아이템 추가 안된다 리사이클러에 문제있다하고
-                    //categoryItemList.add(newItem);
-                    //customListAdapter.notifyItemInserted(0);
+                    Log.i("AppMain", "아이템 추가됨");
                 }
                 break;
 
-            // TODO
+
             // InfoItem.java
             case ITEM_INFO:
+                assert data != null;    // 오류방지를 위해
+                Log.i("아이템 상세 페이지", "result of intent");
                 if (resultCode == ITEM_EDITED) {
-                    int itemID = data.getIntExtra("ITEM_ID", 0);
                     int position = data.getIntExtra("TAB_POSITION", -1);
-                    //c이것도ategoryItemList.remove(itemID);
-                    //categoryItemList.add();
                     itemListAdapter.notifyItemChanged(position);
                 } else if (resultCode == ITEM_DELETED) {
-                    int itemID = data.getIntExtra("ITEM_ID", 0);
                     int position = data.getIntExtra("TAB_POSITION", -1);
-                    //이걸 어떻게 표현해야되는거지 categoryItemList.remove(itemID)
                     itemListAdapter.notifyItemRemoved(position);
                 } else if (resultCode == ITEM_USED) {
+                    int position = data.getIntExtra("TAB_POSITION", -1);
+                    itemListAdapter.notifyItemRemoved(position);
+                } else if(resultCode == ITEM_USED_PORTION){
                     int itemID = data.getIntExtra("ITEM_ID", 0);
                     int position = data.getIntExtra("TAB_POSITION", -1);
-                    int updatedPortion = data.getIntExtra("USED_PORTION", 0);    // n# 형태의 값
-                    categoryItemList.remove(categoryItemList.indexOf(itemID));
-                    itemListAdapter.notifyItemChanged(position);
+                    //int updatedPortion = data.getIntExtra("USED_PORTION", 0);    // n# 형태의 값
 
+                    Item target = ITEM_MAP.get(itemID);
+                    assert target != null;
+                    Log.i("이거", target.name);
+                    categoryItemList.get(categoryItemList.indexOf(target)).portion++;
+                    itemListAdapter.notifyItemChanged(position);
+                    Log.i("아이템 1회분 사용", String.valueOf(position));
                 }
                 break;
-//            if (requestCode == ITEM_INFO) {
-//                //임시 clickedItemId;
-//                if (resultCode == RESULT_OK) {       // 데이터베이스에서 삭제
-//                    // TODO: 그 아이템을 ITEMS 리스트에서 삭제
-//                    //삭제할 아이템 아이디: data.getIntExtra("DELETED_ITEM_ID", 0);
-//                    //ㅣㅇ건 또 뭐야 refreshItemList();
-//
-//                    switch (data.getStringExtra("ITEM_USED")) {
-//                        case "all":         // 모두 먹음
-//
-//                            break;
-//                        case "portion":     // 1회분 먹음, 단순 업데이트
-//                            //ITEM_MAP.get(clickedItemId).portion =
-//                            break;
-//                    }
-//                    //            } else {
-//                }
-//            }
 
             // Settings.java
             case SETTINGS:        // 설정
@@ -486,26 +439,6 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_scrolling, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     // 카메라 권한 설정 체크를 위한 함수
@@ -551,8 +484,8 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
 
     public List<Item> getItemList(String category) {       // 해당 카테고리에 있는 아이템들을 데이터베이스로부터 받아오는 함수
         COUNT = 0;
-        List<Item> newITEMS = new ArrayList<Item>();
-        cursor = itemsDB.search("category", category);      // (응 안해~ 다 카테고리별로만 불러올거야) 해당 카테고리의 아이템을 불러옴 ("all" / "(카테고리명)" / "eaten")
+        List<Item> newITEMS = new ArrayList<>();
+        cursor = itemsDB.search("category", category);      // 해당 카테고리의 아이템을 불러옴
 
         // 불러온 아이템들을 Item 구조체 리스트 안에 넣음
         if (cursor != null) {
@@ -584,3 +517,25 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
         return newITEMS;
     }
 }
+
+// <사용하지 않음>
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_scrolling, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }

@@ -12,7 +12,7 @@ public class Item implements Parcelable {    // intent의 extra에 이 구조체
     public final String product;
     public final String barcode;
     public final String exp;
-    public final int portion;
+    public int portion;     // 계속 변동되므로 final로 선언하지 않음
     public final String category;
     public final String photo;
     public final String memo;

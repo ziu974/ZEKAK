@@ -65,6 +65,7 @@ public class Settings extends AppMain {
             }
         });
 
+        // 카테고리 추가 버튼
         Button addCategoryBtn = findViewById(R.id.add_category_btn);
         addCategoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +83,7 @@ public class Settings extends AppMain {
                             categoryChangeFlag = true;
                             categoryListForEdit.add(newCategoryName);
                             adapter.notifyDataSetChanged();
-                            // 카테고리 추가는 이렇게 함
+                            // ZEKAK: 카테고리 추가는 이렇게 함
                             Boolean result = save(newCategoryName);     // [카테고리 추가]
                             if(!result) {// 중복 이름을 가진 카테고리
                                 Toast.makeText(Settings.this, "Existing Category", Toast.LENGTH_SHORT).show();
@@ -123,6 +124,7 @@ public class Settings extends AppMain {
     }
 
 
+    // Get category list ("CATEGORY(default)" excluded) --> map to adapter
     private class ListAdapter extends ArrayAdapter<String>{
         private final Activity context;
 

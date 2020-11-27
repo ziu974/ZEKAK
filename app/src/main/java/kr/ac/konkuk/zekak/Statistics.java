@@ -1,5 +1,11 @@
 package kr.ac.konkuk.zekak;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Statistics extends AppCompatActivity {
@@ -16,4 +22,18 @@ public class Statistics extends AppCompatActivity {
     // <aws쪽구현>서버 상에서 람다코드 돌려서 자신의 데베에 저장 -->
     // <aws쪽구현> 서버 데베 column: id/탄/단/지/트랜 등 -->
     // TODO: local: 통계 탭 누를 시 서버에서 이 자료 다 긁어와서 띄워줌 //[끝!]
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_statistics);
+        ImageView cancelBtn = findViewById(R.id.statistics_close_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 }

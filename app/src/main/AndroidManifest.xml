@@ -64,7 +64,8 @@
         <activity android:name=".Settings"
             android:launchMode="singleTop"
             android:theme="@style/Theme.ZEKAK.NoActionBar" />
-        <activity android:name=".Statistics" />
+        <activity android:name=".Statistics"
+            android:theme="@style/Theme.ZEKAK.NoActionBar" />
 
     </application>
 

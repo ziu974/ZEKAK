@@ -33,7 +33,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import kr.ac.konkuk.zekak.R;
 import com.google.firebase.components.BuildConfig;
 
 import java.io.File;
@@ -80,7 +79,7 @@ public class AddItem extends AppMain {
     private static final int NOT_NEEDED = 0;       // 아이디 아직 할당 안받았으므로
     String sessionId;
     boolean dbCheck = false;
-    boolean addType;        // false: Manual      true: Barcode
+    boolean addType;        // 아이템 추가 타입 구분>>    false: Manual    true: Barcode
 
 
     /////////////////// View, Buttons etc. //////////////////
@@ -129,36 +128,36 @@ public class AddItem extends AppMain {
 
 
         ////////PART2: 레이아웃에 정의된 뷰(버튼, 텍스트필드 등) 선언 & 리스너 등록
-        if(sessionId.equals("edit")){   // item edit
-            TextView title = (TextView) findViewById(R.id.label_add_item);
+        if(sessionId.equals("edit")){   // i) item edit
+            TextView title = findViewById(R.id.label_add_item);
             title.setText("Edit Item");
 
-            btnCancelEdit = (ImageView)findViewById(R.id.cancel_edit_btn);
-            btnEditItem = (TextView)findViewById(R.id.item_edit_btn);
+            btnCancelEdit = findViewById(R.id.cancel_edit_btn);
+            btnEditItem = findViewById(R.id.item_edit_btn);
             btnCancelEdit.setVisibility(View.VISIBLE);
             btnEditItem.setVisibility(View.VISIBLE);
             btnCancelEdit.setOnClickListener(onClickListener);
             btnEditItem.setOnClickListener(onClickListener);
 
-        } else {        // item add
-            btnCancelAdd = (ImageView)findViewById(R.id.cancel_add_btn);
-            btnAddItem = (TextView)findViewById(R.id.item_add_btn);
+        } else {        // ii) item add
+            btnCancelAdd = findViewById(R.id.cancel_add_btn);
+            btnAddItem = findViewById(R.id.item_add_btn);
             btnCancelAdd.setVisibility(View.VISIBLE);
             btnAddItem.setVisibility(View.VISIBLE);
             btnCancelAdd.setOnClickListener(onClickListener);
             btnAddItem.setOnClickListener(onClickListener);
         }
 
-        btnAddImage = (ImageButton)findViewById(R.id.image_item_photo);
-        viewBarcode = (TextView)findViewById(R.id.item_barcode);
-        viewProduct = (TextView)findViewById(R.id.item_product);
-        editItemName = (EditText)findViewById(R.id.edit_item_name);
-        btnSetExp = (Button)findViewById(R.id.edit_item_exp);
-        viewExp = (TextView)findViewById(R.id.item_product_exp);
-        spinnerSetCategory = (Spinner)findViewById(R.id.edit_item_category);
-        btnSetPortion = (Button)findViewById(R.id.edit_item_portion);
-        pinItem = (Switch)findViewById(R.id.edit_item_pin);
-        viewMemo = (EditText) findViewById(R.id.edit_item_memo);
+        btnAddImage = findViewById(R.id.image_item_photo);
+        viewBarcode = findViewById(R.id.item_barcode);
+        viewProduct = findViewById(R.id.item_product);
+        editItemName = findViewById(R.id.edit_item_name);
+        btnSetExp = findViewById(R.id.edit_item_exp);
+        viewExp = findViewById(R.id.item_product_exp);
+        spinnerSetCategory = findViewById(R.id.edit_item_category);
+        btnSetPortion = findViewById(R.id.edit_item_portion);
+        pinItem = findViewById(R.id.edit_item_pin);
+        viewMemo =  findViewById(R.id.edit_item_memo);
 
 
         // 리스너 클래스 등록(연결)
@@ -193,6 +192,7 @@ public class AddItem extends AppMain {
                 product = getIntent().getStringExtra("productName");
                 productExp = getIntent().getStringExtra("productExp");
 
+                // 인식된 제품의 정보를 mapping
                 viewBarcode.setText(barcode);
                 viewProduct.setText(product);
                 viewExp.setText(productExp);
@@ -248,11 +248,9 @@ public class AddItem extends AppMain {
         pinItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){      // pin 기능 on
-                    flag = true;
-                } else {            // pin 기능 off
-                    flag = false;
-                }
+                flag = isChecked;
+                // true: pin 기능 on
+                // false: pin 기능 off
             }
         });
 
@@ -266,12 +264,13 @@ public class AddItem extends AppMain {
             Intent returnIntent = new Intent();
             switch (view.getId()){
                 case R.id.image_item_photo:
+                    // 아이템의 사진 첨부
                     final Dialog photoDialog = new Dialog(AddItem.this);
                     photoDialog.setContentView(R.layout.photo_dialog);
 
-                    Button galleryPhotoBtn = (Button) photoDialog.findViewById(R.id.gallery_photo_btn);
-                    Button cameraPhotoBtn = (Button)photoDialog.findViewById(R.id.camera_photo_btn);
-                    Button deletePhotoBtn = (Button)photoDialog.findViewById(R.id.delete_photo_btn);
+                    Button galleryPhotoBtn = photoDialog.findViewById(R.id.gallery_photo_btn);
+                    Button cameraPhotoBtn = photoDialog.findViewById(R.id.camera_photo_btn);
+                    Button deletePhotoBtn = photoDialog.findViewById(R.id.delete_photo_btn);
 
                     galleryPhotoBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -490,7 +489,6 @@ public class AddItem extends AppMain {
                     e.printStackTrace();
             }
         } else {
-            Log.i("핸드폰을 그냥 새로 사세요", "ㅎㅎ");
             try {
                 originalBm = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(tempFile));
             } catch (IOException e){
@@ -518,7 +516,7 @@ public class AddItem extends AppMain {
 //        }
     }
 
-    private void compressImage() throws IOException {       // 현재 버튼 썸네일을 파일로 저장(원본 ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ)
+    private void compressImage() throws IOException {       // 현재 버튼 썸네일을 파일로 저장(원본X)
         File copyFile = createImageFile();          // 복사할 file
         FileOutputStream fOut = new FileOutputStream(copyFile);
         Bitmap temp = ((BitmapDrawable) btnAddImage.getDrawable()).getBitmap();
@@ -532,7 +530,7 @@ public class AddItem extends AppMain {
     public void takePhoto() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        //사진찍고+crop+rotate(-90도)+reduce size 까지 한 다음에 그거에다가 파일명 주고 저장할거라 원본은 저장 ㄴㄴ)
+        //사진찍고+crop+rotate(-90도)+reduce size 까지 한 다음에 그거에다가 파일명 주고 저장할거라 원본은 저장X)
         startActivityForResult(cameraIntent, PICK_FROM_CAMERA);
     }
 
@@ -599,9 +597,10 @@ public class AddItem extends AppMain {
                 }
             }
 //
+            // 사진이 너무 커서 크롭, 회전, 크기줄이기 다 한담에 그거 우리 어플 파일에 새로 복사 <아래 사용X>
 //            try{
 //                tempFile = new File(photoUri.getPath().toString());
-//                setImage(true);        // 카메라 사진 뷰에 적용, 복사본은 만들지 않음--> 아니다, 사진이 너무 커서 크롭, 회전, 크기줄이기 다 한담에 그거 우리 어플 파일에 새로 복사
+//                setImage(true);
 //            } catch (IOException e){}
         }
 

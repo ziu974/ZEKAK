@@ -33,7 +33,7 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.i("데이테베이스 생성!", "ㅎㅎ");
+        Log.i("데이테베이스 생성!", "EMPTY");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 NAME +" TEXT, " +

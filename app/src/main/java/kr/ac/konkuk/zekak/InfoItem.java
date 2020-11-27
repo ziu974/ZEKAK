@@ -2,6 +2,7 @@ package kr.ac.konkuk.zekak;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,8 +19,10 @@ import androidx.annotation.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class InfoItem extends AppMain {
@@ -60,10 +63,11 @@ public class InfoItem extends AppMain {
         // PART1: 어디에서 왔는지
         // intent 엑스트라로 id 값 넘갸줄거라서 해시맵에서 이 아이디값 가지고 탐색 진행해야함
         itemID = getIntent().getIntExtra("ITEM_ID", 0);
-        position = getIntent().getIntExtra("TAB_POSTION", -1);
+        position = getIntent().getIntExtra("TAB_POSITION", -1);
+        Log.i("Item정보", itemID+"&"+position);
 
         // PART2: 해시맵 탐색해서 아이템 정보 가져옴
-        itemInfo = ITEM_MAP.get(itemID);
+        itemInfo = getItem();
 
 
         ///// PART3: 레이아웃 관련
@@ -91,7 +95,7 @@ public class InfoItem extends AppMain {
         ////    ==> 따라서 nn이면 1회분만 남은 상태(ex.44)
         divided = initialUsage / 10 + 1;   // 사용자 1회분 설정값
         used = initialUsage - ((divided-1) * 10); // 사용량
-        percentage = used / divided * 100;
+        percentage = 100 * used / divided;
 
 
         // item name
@@ -153,8 +157,9 @@ public class InfoItem extends AppMain {
                                 Toast.makeText(InfoItem.this, "모두먹음 처리 fail", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(InfoItem.this, "모두 먹음", Toast.LENGTH_SHORT).show();
-                                returnIntent.putExtra("ITEM_USED", "all");
-                                setResult(RESULT_OK, returnIntent);
+                                returnIntent.putExtra("ITEM_ID", itemID);
+                                returnIntent.putExtra("TAB_POSITION", position);
+                                setResult(ITEM_USED, returnIntent);
                                 askAllUse.dismiss();
                                 finish();
                             }
@@ -165,17 +170,20 @@ public class InfoItem extends AppMain {
                         portionUsedBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {   // 사용량 저장하고, progress bar 업데이트
-                                dbCheck = itemsDB.usePortion(itemID, initialUsage++);       // 1회분 사용 처리 함수
+                                initialUsage++;
+                                dbCheck = itemsDB.usePortion(itemID, initialUsage);       // 1회분 사용 처리 함수
+                                Log.i("변경된 사용량", String.valueOf(initialUsage));
                                 if(!dbCheck) {
                                     Toast.makeText(InfoItem.this, "1회분 사용 fail", Toast.LENGTH_SHORT).show();
                                 } else {
                                     // memo
                                     used++;
                                     percentage = 100 * used / divided;
-                                    portionBar.incrementProgressBy(percentage);
+                                    portionBar.setProgress(percentage, true);
                                     portionLabel.setText(used+"/"+divided);
-                                    returnIntent.putExtra("ITEM_USED", "portion");
-                                    setResult(RESULT_OK, returnIntent);
+                                    returnIntent.putExtra("ITEM_ID", itemID);
+                                    returnIntent.putExtra("TAB_POSITION", position);
+                                    setResult(ITEM_USED_PORTION, returnIntent);
                                 }
                                 askAllUse.dismiss();
                             }
@@ -208,9 +216,9 @@ public class InfoItem extends AppMain {
                 case R.id.delete_item_btn:      // delete item
                     final Dialog askAgain = new Dialog(InfoItem.this);
                     askAgain.setContentView(R.layout.delete_item_dialog);
-                    TextView itemName2 = (TextView) askAgain.findViewById(R.id.item_name_text);
-                    Button allUsedBtn2 = (Button) askAgain.findViewById(R.id.all_used_btn);
-                    Button deletePermanentBtn = (Button) askAgain.findViewById(R.id.item_delete_btn);
+                    TextView itemName2 = askAgain.findViewById(R.id.item_name_text);
+                    Button allUsedBtn2 = askAgain.findViewById(R.id.all_used_btn);
+                    Button deletePermanentBtn = askAgain.findViewById(R.id.item_delete_btn);
                     ImageView cancelBtn = askAgain.findViewById(R.id.cancel_btn);
 
                     itemName2.setText(name.getText()+" 을(를)");
@@ -279,6 +287,7 @@ public class InfoItem extends AppMain {
         }
     }
 
+    // 잔여 유통기한 일을 계산하는 함수
     public void calcRemainingDates(String exp) {
         try{
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
@@ -304,5 +313,34 @@ public class InfoItem extends AppMain {
         catch(ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    // AppMain.java와 유사
+    public Item getItem() {       // 특정 아이템을 데이터베이스로부터 받아오는 함수
+        Cursor foundItem = itemsDB.search("item", String.valueOf(itemID));  // 데이터 베이스에서 해당 아이템을 불러옴
+
+        // 불러온 아이템들을 Item 구조체 리스트 안에 넣음
+        if (foundItem != null) {
+            foundItem.moveToFirst();        // 이렇게 cursor를 맨 앞으로 이동해야 그 첫번쨰부터 가리킬 수 있음, 안그러면 마지막(포인터라고 생각히면됨)
+            int id = foundItem.getInt(foundItem.getColumnIndex(itemsDB.helper.ID));
+            String name = foundItem.getString(foundItem.getColumnIndex(itemsDB.helper.NAME));
+            String product = foundItem.getString(foundItem.getColumnIndex(itemsDB.helper.PRODUCT));
+            String barcode = foundItem.getString(foundItem.getColumnIndex(itemsDB.helper.BARCODE));
+            String exp = foundItem.getString(foundItem.getColumnIndex(itemsDB.helper.EXP));
+            int portion = foundItem.getInt(foundItem.getColumnIndex(itemsDB.helper.PORTION));
+            String category = foundItem.getString(foundItem.getColumnIndex(itemsDB.helper.CATEGORY));
+            String photo = foundItem.getString(foundItem.getColumnIndex(itemsDB.helper.PHOTO));
+            String memo = foundItem.getString(foundItem.getColumnIndex(itemsDB.helper.MEMO));
+            boolean pin = false;
+            if (foundItem.getInt(foundItem.getColumnIndex(itemsDB.helper.FLAG)) > 0) {
+                pin = true;
+            }
+            itemInfo = new Item(id, name, product, barcode, exp, portion, category, photo, memo, pin);
+
+            //  해시맵에서 데이터 갱신 필요 --> AppMain에서는 ITEM_MAP을 사용해서 아이템을 관리하기 때문에
+            ITEM_MAP.remove(id);
+            ITEM_MAP.put(id, itemInfo);
+        }
+        return itemInfo;
     }
 }

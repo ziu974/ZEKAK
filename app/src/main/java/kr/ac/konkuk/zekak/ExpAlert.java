@@ -51,7 +51,7 @@ public class ExpAlert extends Service { // 핀 on 되어있는 식제품들에 �
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        from = calendar.getTimeInMillis();
+        from = calendar.getTimeInMillis();      // 오늘 현재 시간 받아옴
 
         Intent intent = new Intent(this, ExpAlert.class);       // 같은 클래스로 intent --> onCreate()호출
         PendingIntent trigger = PendingIntent.getService(this, 0, intent, 0);
@@ -82,7 +82,7 @@ public class ExpAlert extends Service { // 핀 on 되어있는 식제품들에 �
 
 
 
-    public void sendNotification(int itemID, String name, int remaining){
+    public void sendNotification(int itemID, String name, int remaining){       // 알림 전송하는 실질적인 함수
         Intent intent = new Intent(this, InfoItem.class);
         intent.putExtra("ITEM_ID", itemID);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

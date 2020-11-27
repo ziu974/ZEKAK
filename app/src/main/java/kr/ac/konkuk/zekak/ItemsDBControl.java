@@ -14,7 +14,7 @@ public class ItemsDBControl {
 
 
 
-    public ItemsDBControl(Context context){
+    public ItemsDBControl(Context context){     // 데이터베이스에 task 수행하고 싶을 때 이것의 객체 생성해서 함수 사용
         this.context = context;
         helper = new ItemsDBHelper(context);
         db = context.openOrCreateDatabase(helper.DATABASE_NAME, Context.MODE_PRIVATE, null);
@@ -61,6 +61,9 @@ public class ItemsDBControl {
                     selection = helper.CATEGORY + "= ? ";
                 }
                 break;
+            case "item":
+                selection = helper.ID + "= ? ";
+                break;
             default:
                 selection = null;       // define 안되면 그냥 전체 아이템 가져옴
                 break;
@@ -69,7 +72,7 @@ public class ItemsDBControl {
         return cursor;
     }
 
-    public boolean edit(Item item, int itemID){
+    public boolean edit(Item item, int itemID){     // 아이템 상세정보 수정 시
         //db = helper.getWritableDatabase();
         String whereClause = "ID = "+ itemID;
         ContentValues values = new ContentValues();
@@ -90,8 +93,8 @@ public class ItemsDBControl {
         }
     }
 
-    public boolean usePortion(int itemID, int value) {
-        //db = helper.getWritableDatabase();
+    public boolean usePortion(int itemID, int value) {      // 1회분 사용시 데이터베이스에 적용
+        db = helper.getWritableDatabase();
         String whereClause = "ID = "+ itemID;
         ContentValues values = new ContentValues();
         values.put(helper.PORTION, value);

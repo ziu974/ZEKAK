@@ -20,7 +20,7 @@
             app:popupTheme="@style/Theme.ZEKAK.PopupOverlay" />
 
         <ImageView
-            android:id="@+id/settings_close_btn"
+            android:id="@+id/statistics_close_btn"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="Statistics"
             android:textSize="@dimen/text_title"
             android:textStyle="bold|italic"
             android:textColor="@color/white"
@@ -48,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/app_bar"
-        android:text="유통기한 임박 알림"
+        android:text="ZEKAK Nutrients"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/text_small_grey"
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/label_alert_toggle"
-        android:text="재깍이 유통기한이 얼마 남지 않은 식품들을 알려드려요!\n(알림을 원하시지 않는다면 설정을 꺼주세요.)"
+        android:text="재깍이 '모두 먹음' 처리 된 식재료들에 대해서 섭취하고 계신 영양성분을 분석해 드려요! (Statistics 기능을 사용하고 싶으실 경우 로그인이 필요합니다.)"
         android:textSize="12sp"
         android:textStyle="normal"
         android:textColor="@color/light_grey"
@@ -77,8 +77,8 @@
         android:layout_alignBottom="@id/label_alert_toggle"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="40dp"
-        android:checked="true"
-        android:clickable="true"
+        android:checked="false"
+        android:clickable="false"
         android:focusable="true"
         tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
@@ -97,33 +97,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/group_divider"
-        android:text="카테고리 관리"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
+        android:text="(Coming Soon)"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/text_small_grey"
+        android:textColor="@color/light_grey"
         android:paddingHorizontal="40dp"
         android:paddingVertical="5dp"
         android:layout_marginBottom="20dp"/>
 
-    <Button
-        android:id="@+id/add_category_btn"
-        android:layout_width="55dp"
-        android:layout_height="35dp"
-        android:layout_toEndOf="@id/label_manage_category"
-        android:layout_alignBottom="@id/label_manage_category"
-        android:text="추가"
-        android:textSize="13sp"
-        android:padding="3dp"/>
+<!--    <Button-->
+<!--        android:id="@+id/add_category_btn"-->
+<!--        android:layout_width="55dp"-->
+<!--        android:layout_height="35dp"-->
+<!--        android:layout_toEndOf="@id/label_manage_category"-->
+<!--        android:layout_alignBottom="@id/label_manage_category"-->
+<!--        android:text="추가"-->
+<!--        android:textSize="13sp"-->
+<!--        android:padding="3dp"/>-->
 
 
-    <ListView
-        android:id="@+id/list_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="40dp"
-        android:layout_below="@id/label_manage_category"
-        tools:context=".Settings"
-        tools:listitem="@layout/list_category_item"/>
+<!--    <ListView-->
+<!--        android:id="@+id/list_category"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="40dp"-->
+<!--        android:layout_below="@id/label_manage_category"-->
+<!--        tools:context=".Settings"-->
+<!--        tools:listitem="@layout/list_category_item"/>-->
 
 
 </RelativeLayout>

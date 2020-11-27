@@ -2,6 +2,7 @@ package kr.ac.konkuk.zekak;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,12 +82,13 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
             holder.iPortion = itemDisplay.get(position).portion;
             int divided = holder.iPortion / 10 + 1;   // 사용자 1회분 설정값(주의: 1더해서 실제 1~10값으로 처리)
             int used =  holder.iPortion - ((divided-1) * 10); // 사용량
+            Log.i("포션", "횟수-"+divided+"사용횟수-"+used);
 
             holder.mItem = itemDisplay.get(position);
             ///////임시 holder.iImageView.setImageBitmap(originalBm);
             holder.iNameView.setText(itemDisplay.get(position).name);
             holder.iExpView.setText(itemDisplay.get(position).exp);
-            holder.iPortionView.setProgress(used/divided * 100);
+            holder.iPortionView.setProgress(100 * used / divided);
             if(itemDisplay.get(position).flag){     // 핀 ON인 경우(default: OFF)
                 holder.iPinView.setVisibility(View.VISIBLE);
 
@@ -130,7 +132,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
                 @Override
                 public boolean onLongClick(View v) {
                     holdListener.onItemLongHold(itemID, v, getAdapterPosition(), iPortion);
-                    return false;
+                    return true;        // 이렇게 해야 onClickListener가 비활성화--> onLongClickListener만 호출됨!!
                 }
             });
 
@@ -153,9 +155,4 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
     public long getItemId(int position) {       // CODE: 갱신, 고유 id 연결해서 어댑터에게 setHasStableIds 알릴 때 활용
         return itemDisplay.get(position).getId();
     }
-
-
-    private void refresh() {
-    }
-
 }
