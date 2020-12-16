@@ -135,7 +135,7 @@ public class BarcodeScanningActivity extends CaptureActivity {
 
     private String searchProduct(String barcodeValue) {
         StringBuffer buffer = new StringBuffer();
-        String queryUrl = "http://openapi.foodsafetykorea.go.kr/api/6a8b4f6ef9c24654bd86/C005/xml/1/1/BAR_CD=" + barcodeValue;       // 1개의 결과값만 필요하기 때문에 1/1, xml 형태로 받아옴
+        String queryUrl = "http://openapi.foodsafetykorea.go.kr/api/6a8b4f6ef9c24654bd86/C005/xml/1/1/BAR_CD=" + barcodeValue;       // me>여기 1000건에 없으면 어떡할건데--> 차피 1개만 필요
 
         //https://recipes4dev.tistory.com/134 참고
         XmlPullParserFactory parserCreator;

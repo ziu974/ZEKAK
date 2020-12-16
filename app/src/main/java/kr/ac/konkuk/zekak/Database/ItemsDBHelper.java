@@ -1,4 +1,4 @@
-package kr.ac.konkuk.zekak;
+package kr.ac.konkuk.zekak.Database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

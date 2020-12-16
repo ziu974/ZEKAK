@@ -109,6 +109,7 @@ public class Settings extends AppMain {
             public void onClick(View v) {
                 // 변경된 설정값들을 내보내고 ativity distroy
                 if(alertSettingBefore != alertSettingAfter)     // 알림 설정 바꾼 경우
+                    returnIntent.putExtra("ALERT_SETTINGS", alertSettingAfter);
                     setResult(ALERT_SETTINGS_CHANGED, returnIntent);
 
                 if(categoryChangeFlag) {       // 카테고리 목록 변경된 경우

@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/label_alert_toggle"
-        android:text="재깍이 '모두 먹음' 처리 된 식재료들에 대해서 섭취하고 계신 영양성분을 분석해 드려요! (Statistics 기능을 사용하고 싶으실 경우 로그인이 필요합니다.)"
+        android:text="재깍이 '모두 먹음' 처리 된 식재료들에 대해서 섭취하고 계신 영양성분을 분석해 드려요! (Statistics 기능을 사용하고 싶으실 경우 식재료의 이름을 최대한 간결하고 정확하게 입력해주세요.)"
         android:textSize="12sp"
         android:textStyle="normal"
         android:textColor="@color/light_grey"
@@ -107,25 +107,115 @@
         android:paddingVertical="5dp"
         android:layout_marginBottom="20dp"/>
 
-<!--    <Button-->
-<!--        android:id="@+id/add_category_btn"-->
-<!--        android:layout_width="55dp"-->
-<!--        android:layout_height="35dp"-->
-<!--        android:layout_toEndOf="@id/label_manage_category"-->
-<!--        android:layout_alignBottom="@id/label_manage_category"-->
-<!--        android:text="추가"-->
-<!--        android:textSize="13sp"-->
-<!--        android:padding="3dp"/>-->
+    <Button
+        android:id="@+id/add_category_btn"
+        android:layout_width="55dp"
+        android:layout_height="35dp"
+        android:layout_toEndOf="@id/label_manage_category"
+        android:layout_alignBottom="@id/label_manage_category"
+        android:text="추가"
+        android:textSize="13sp"
+        android:padding="3dp"/>
 
 
-<!--    <ListView-->
-<!--        android:id="@+id/list_category"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="40dp"-->
-<!--        android:layout_below="@id/label_manage_category"-->
-<!--        tools:context=".Settings"-->
-<!--        tools:listitem="@layout/list_category_item"/>-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/signInLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@id/group_divider">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/cSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:switchMinWidth="100dp"
+            app:track="@drawable/button_background_drawable"
+            app:splitTrack="true"
+            android:textOn=""
+            android:textOff="dd"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/cSwitch_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
+            android:text="ON"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/cSwitch"
+            app:layout_constraintLeft_toLeftOf="@+id/cSwitch"
+            app:layout_constraintTop_toTopOf="@id/cSwitch" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/button_background_drawable"
+        android:backgroundTint="@color/yellow"
+        android:layout_below="@id/group_divider"
+        android:layout_marginHorizontal="50dp"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/statistics_version1_btn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/barcode_button"
+            android:padding="3dp"
+            />
+
+        <ImageView
+            android:id="@+id/statistics_version2_btn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/barcode_button"
+            android:padding="3dp"
+            android:visibility="invisible"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/titleMonthStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_divider"
+        android:layout_marginVertical="60dp"
+        android:text="XX 월의 통계"
+        android:textColor="@color/text_grey"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/thisMonthStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleMonthStats"
+        android:layout_marginVertical="60dp"
+        android:text="XX 월의 통계"
+        android:textColor="@color/text_grey"
+        android:textStyle="normal"
+        android:textSize="18sp"
+        android:gravity="center"/>
+
+    <ToggleButton
+        android:id="@+id/sksk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textOn="PiIE"
+        android:textOff="Bar"/>
+
+
+
 
 
 </RelativeLayout>

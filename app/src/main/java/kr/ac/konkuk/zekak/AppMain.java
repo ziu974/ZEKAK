@@ -117,6 +117,7 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
         // PART2: Prefs part (설정값: 카테고리 불러오기)
         load();      // 카테고리 목록 불러옴
         categoryAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryList);
+        loadAlert();
 
         // PART3: DB - 현재 카테고리로 ItemList 받아옴
         itemsDB = new ItemsDBControl(this);
@@ -197,15 +198,8 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
         //bi = DataBindingUtil.setContentView(this, R.layout.activity_main);
     }
 
-    // 설정값 불러오는 함수, 처음에만 호출(안그러면 categoryList 중복되어 저장됨)
+    // 설정값 불러오는 함수
     private void load() {
-        // 1. 저장된 알림 설정
-        alert = getSharedPreferences(PREFS_NAME2, Activity.MODE_PRIVATE);
-        alertSetting = alert.getBoolean(PREFS_NAME2, true);
-        if(alertSetting){       // 알림 기능 서비스 시작
-            startService(new Intent(this, ExpAlert.class));
-        }
-
         // 2. 저장된 카테고리 목록
         appData = getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
         Set<String> set = appData.getStringSet(PREFS_NAME, null);
@@ -214,6 +208,19 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
         } else{
             categoryList.clear();
             categoryList.addAll(set);
+        }
+    }
+
+    private void loadAlert() {
+        // 1. 저장된 알림 설정
+        alert = getSharedPreferences(PREFS_NAME2, Activity.MODE_PRIVATE);
+        alertSetting = alert.getBoolean(PREFS_NAME2, true);
+        if(alertSetting){       // 알림 기능 서비스 시작
+            Log.i("켬", "알림");
+            startService(new Intent(this, ExpAlert.class));
+        } else {                // 알림 기능이 꺼져있다면
+            Log.i("끔", "알림");
+            stopService(new Intent(this, ExpAlert.class));
         }
     }
 
@@ -242,6 +249,12 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
         categoryAdapter.notifyDataSetChanged();
         recyclerView.swapAdapter(itemListAdapter, false);
 
+        // TODO 모프 교재에서는 이렇게 함
+        // 근데 onResume()에서
+//        super.onResume();
+//        mAdapter.clear();
+//        mAdapter.addAll(db.getAllMovies());
+//        mAdaoter.notifyDataSetChanged();
     }
 
     @Override
@@ -420,10 +433,13 @@ public class AppMain<ActivityFabBinding> extends AppCompatActivity implements Cu
             // Settings.java
             case SETTINGS:        // 설정
                 if ((resultCode == ALERT_SETTINGS_CHANGED)) {       // 알림 설정이 변경된 경우
+                    Log.i("알림 설정 바뀜", "네네");
+                    alertSetting = data.getBooleanExtra("ALERT_SETTINGS", false);
                     SharedPreferences.Editor editor = alert.edit();       // SharedPreferences (설정 저장용 파일) 열기
                     editor.remove(PREFS_NAME2);
-                    editor.putBoolean(PREFS_NAME2, !alertSetting);
+                    editor.putBoolean(PREFS_NAME2, alertSetting);
                     editor.apply();
+                    loadAlert();
                 } else if (resultCode == CATEGORY_LIST_CHANGED) {     // 카테고리 목록에 변동이 생긴 경우
                     // 전체 아이템 다시 갱신 (ITEMS)
                     ITEMS = getItemList("CATEGORY");

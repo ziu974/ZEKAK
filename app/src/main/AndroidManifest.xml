@@ -67,6 +67,10 @@
         <activity android:name=".Statistics"
             android:theme="@style/Theme.ZEKAK.NoActionBar" />
 
+        <service android:name=".ExpAlert"
+            android:enabled="true"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

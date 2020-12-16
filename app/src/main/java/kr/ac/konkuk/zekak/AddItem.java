@@ -471,6 +471,7 @@ public class AddItem extends AppMain {
     // 갤러리 접속 또는 카메라 키기
     public void getPhoto(){
         //black-jin0427.tistory.com/120 (CODE:11.07)
+        //11.29 이거 말고 black-jin0427.tistory.com/121 보삼
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(galleryIntent, PICK_FROM_ALBUM);
