@@ -31,20 +31,23 @@ public class ZekakServer {
         Date date = new Date();
         Log.i("현재 Month",dateFormat.format(date));
         month = Integer.parseInt(dateFormat.format(date));
+//        getStatistics();
+//        requestNutrientInfo(itemName);
     }
 
 
 //    public static boolean requestNutrientInfo(String itemName) {
 //        boolean awsCheck = false;
 //
-////        JSONObject query = new JSONObject();
-////        try {
-////            query.put("month", month);
-////        } catch (JSONException e) {
-////            e.printStackTrace();
-////        }
+//        JSONObject query = new JSONObject();
+//        try {
+//            query.put("itemName", itemName);
+//            query.put("month", month);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 //
-//        Call<Void> call = retrofitInterface.requestNutrientInfo(itemName, month);
+//        Call<Void> call = retrofitInterface.requestNutrientInfo();
 //
 //
 //        call.enqueue(new Callback<Void>() {
@@ -69,51 +72,51 @@ public class ZekakServer {
 //        });
 //        return awsCheck;
 //    }
-
-    public static void getStatistics() {
-        // statistics.js로 get url 날림
-        // 응답으로 서버에서 statistics 모델 형태로 json 보내줄 거임
-        // 단순히 이거 intent해주면 됨 (or return)
-        JSONObject query = new JSONObject();
-            try {
-                query.put("month", month);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-        Call<ModelStatistics> call = retrofitInterface.getStatistics(month);
-
-
-        call.enqueue(new Callback<ModelStatistics>() {
-            @Override
-            public void onResponse(Call<ModelStatistics> call, Response<ModelStatistics> response) {
-                if(response.code() == 200){
-                    //awsCheck = true;
-                    ModelStatistics userStatistics = response.body();
-                    setResults(userStatistics);
-                    Log.i(TAG, String.valueOf(userStatistics.month));
-
-                } else if(response.code() == 204) {
-                    Log.i("아아아ㅏㅇ", response.message());
-                } else {    // error
-                    Log.i("코드", String.valueOf(response.code()));
-                    Log.i("왜", response.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ModelStatistics> call, Throwable t) {
-                //awsCheck = false;
-                Log.i(TAG, t.getMessage());
-            }
-
-
-        });
-    }
-
-    private static void setResults(ModelStatistics results){
-        ModelStatistics.userStatistics = results;
-        Log.i("통계 결과--> ", userStatistics.toString());
-    }
+//
+//    public static void getStatistics() {
+//        // statistics.js로 get url 날림
+//        // 응답으로 서버에서 statistics 모델 형태로 json 보내줄 거임
+//        // 단순히 이거 intent해주면 됨 (or return)
+//        JSONObject query = new JSONObject();
+//            try {
+//                query.put("month", month);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//        Call<ModelStatistics> call = retrofitInterface.getStatistics(month);
+//
+//
+//        call.enqueue(new Callback<ModelStatistics>() {
+//            @Override
+//            public void onResponse(Call<ModelStatistics> call, Response<ModelStatistics> response) {
+//                if(response.code() == 200){
+//                    //awsCheck = true;
+//                    ModelStatistics userStatistics = response.body();
+//                    setResults(userStatistics);
+//                    Log.i(TAG, String.valueOf(userStatistics.month));
+//
+//                } else if(response.code() == 202) {
+//                    Log.i("New Statistics for this month", response.message());
+//                } else {    // error
+//                    Log.i("CODE", String.valueOf(response.code()));
+//                    Log.i("MSG", response.toString());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ModelStatistics> call, Throwable t) {
+//                //awsCheck = false;
+//                Log.i(TAG, t.getMessage());
+//            }
+//
+//
+//        });
+//    }
+//
+//    private static void setResults(ModelStatistics results){
+//        ModelStatistics.userStatistics = results;
+//        Log.i("통계 결과--> ", userStatistics.toString());
+//    }
 }

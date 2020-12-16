@@ -19,12 +19,8 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RetrofitInterface {
-//    @FormUrlEncoded
-//    @POST("searchItem")
-//    Call<Void> requestNutrientInfo(@Field("itemName") String itemName,
-//                                   @Field("month") int month);
 
-    //@Headers("Content-Type: application/json")
+    @Headers("Content-Type: application/json")
     @POST("searchitem")
     Call<Void> requestNutrientInfo(@Body Map<String, String> body);
 
@@ -32,9 +28,12 @@ public interface RetrofitInterface {
     Call<ModelStatistics> getStatistics(@Query("month") int month);
 
 
+    //@FormUrlEncoded
+    @DELETE("statistics")
+    Call<Void> deleteStatistics(@Query("month") int targetMonth);
+
+
     @PUT("statistics")
     Call<String> startNewStatistics();
-
-    @DELETE("statistics")
-    Call<Void> deleteStatistics(@Field("month") int targetMonth);
 }
+

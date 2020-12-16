@@ -3,8 +3,10 @@ package kr.ac.konkuk.zekak;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,6 +57,8 @@ public class Statistics extends AppCompatActivity {
 //        }
 
 
+
+
         Call<ModelStatistics> call = zekakServer.retrofitInterface.getStatistics(zekakServer.month);
 
 
@@ -85,17 +89,54 @@ public class Statistics extends AppCompatActivity {
 
         });
 
+        Button clearBtn = findViewById(R.id.clear_stats_btn);
+        clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<Void> call = zekakServer.retrofitInterface.deleteStatistics(zekakServer.month);
+
+
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if(response.code() == 200){
+                            //awsCheck = true;
+                            Toast.makeText(Statistics.this, String.valueOf(response.body()), Toast.LENGTH_LONG).show();
+                            setResults(userStatistics);
+                            Log.i("668", String.valueOf(userStatistics.month));
+
+                        } else if(response.code() == 400) {
+                            Log.i("통계 존재하지 않음", response.message());
+
+                        } else {    // error
+                            Log.i("코드6", String.valueOf(response.code()));
+                            Log.i("왜", response.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        //awsCheck = false;
+                        Log.i("오류", t.getMessage());
+                    }
+
+
+                });
+            }
+        });
+
 
 
         // TODO: 차트로 띄워주기, 지금은 임시로 그냥 텍스트로만 디스플레이 해줌
         // todo 근데 이거 설마 또 스레드 문제 때문에 기다려야되려나..oo
-
+        TextView monthTitle = findViewById(R.id.titleMonthStats);
+        monthTitle.setText(zekakServer.month+"월의 통계결과");
         info = findViewById(R.id.thisMonthStats);
 
-        if(userStatistics != null){     // 해당 달의 통계자료 있는 경우
-            Log.i("아","아아아");
-            info.setText(String.valueOf(userStatistics.month) + userStatistics.calories + userStatistics.carbohydrate);
-        }
+//        if(userStatistics != null){     // 해당 달의 통계자료 있는 경우
+//            Log.i("아","아아아");
+//            info.setText(String.valueOf(userStatistics.month) + userStatistics.calories + userStatistics.carbohydrate);
+//        }
 
         ImageView cancelBtn = findViewById(R.id.statistics_close_btn);
 
@@ -126,7 +167,9 @@ public class Statistics extends AppCompatActivity {
 
     private void setResults(ModelStatistics results){
         ModelStatistics.userStatistics = results;
-        info.setText("총 칼로리: "+ userStatistics.calories + "\n탄수화물: "+ userStatistics.carbohydrate);
+        info.setText("총 칼로리: "+ userStatistics.calories + "\n탄수화물: "+ userStatistics.carbohydrate + "\n단백질: "+userStatistics.protein + "\n지방: "+userStatistics.fat+"\n당: "+userStatistics.sugar +"\n콜레스테롤:"+userStatistics.cholesterol
+                +"\n나트륨: "+ userStatistics.natrium+"\n포화지방: "+userStatistics.saturatedFat + "\n불포화지방: "+userStatistics.transFat);
+
         Log.i("통계 결과--> ", userStatistics.toString());
     }
 

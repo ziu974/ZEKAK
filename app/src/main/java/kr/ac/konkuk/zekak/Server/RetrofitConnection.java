@@ -10,12 +10,6 @@ public class RetrofitConnection {
     public static final String BASE_URL = "https://j1nsj4lwvf.execute-api.us-east-1.amazonaws.com/zekak/";
     public static Retrofit retrofit;
 
-//    retrofit =new Retrofit.Builder()
-//            .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build();
-
-//    public RetrofitInterface server = retrofit.create(RetrofitInterface.class);
 
     static OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.MINUTES)
