@@ -557,6 +557,9 @@ public class AddItem extends AppMain {
 
         // Photo from gallery
         if(requestCode == PICK_FROM_ALBUM) {
+            if(data == null){
+                return;
+            }
             Uri photoUri = data.getData();      // 갤러리에서 선택한 이미지의 Uri 받아옴
             // (CODE: 포토) photoUri 형태: content://(도메인 com.example.zekak).fileprovider/photos/zekak_(시간).jpg.
             Cursor cursor = null;               // cursor를 통해 스키마를 content://에서 file://로 변경할 것임 (사진이 저장된 절대경로 받아오는 과정)

@@ -78,7 +78,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="40dp"
         android:checked="false"
-        android:clickable="false"
+        android:clickable="true"
         android:focusable="true"
         tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
@@ -93,29 +93,19 @@
         android:paddingHorizontal="30dp"/>
 
     <TextView
-        android:id="@+id/label_manage_category"
-        android:layout_width="wrap_content"
+        android:id="@+id/thisMonthStats"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/group_divider"
-        android:layout_centerInParent="true"
         android:layout_marginTop="100dp"
-        android:text="(Coming Soon)"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:text="(Wait a sec...)"
+        android:textSize="17sp"
+        android:textStyle="normal"
         android:textColor="@color/light_grey"
-        android:paddingHorizontal="40dp"
-        android:paddingVertical="5dp"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="15dp"
         android:layout_marginBottom="20dp"/>
 
-    <Button
-        android:id="@+id/add_category_btn"
-        android:layout_width="55dp"
-        android:layout_height="35dp"
-        android:layout_toEndOf="@id/label_manage_category"
-        android:layout_alignBottom="@id/label_manage_category"
-        android:text="추가"
-        android:textSize="13sp"
-        android:padding="3dp"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -184,7 +174,7 @@
 
     <TextView
         android:id="@+id/titleMonthStats"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/group_divider"
         android:layout_marginVertical="60dp"
@@ -192,27 +182,30 @@
         android:textColor="@color/text_grey"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_centerHorizontal="true"/>
 
-    <TextView
-        android:id="@+id/thisMonthStats"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleMonthStats"
-        android:layout_marginVertical="60dp"
-        android:text="XX 월의 통계"
-        android:textColor="@color/text_grey"
-        android:textStyle="normal"
-        android:textSize="18sp"
-        android:gravity="center"/>
 
-    <ToggleButton
-        android:id="@+id/sksk"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:textOn="PiIE"
-        android:textOff="Bar"/>
+
+    <Button
+        android:id="@+id/clear_stats_btn"
+        android:layout_width="55dp"
+        android:layout_height="35dp"
+        android:layout_alignBottom="@id/titleMonthStats"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="30dp"
+        android:text="초기화"
+        android:backgroundTint="@color/navy"
+        android:textSize="13sp"
+        android:padding="3dp"/>
+
+<!--    <ToggleButton-->
+<!--        android:id="@+id/sksk"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:textOn="PiIE"-->
+<!--        android:textOff="Bar"/>-->
 
 
 
